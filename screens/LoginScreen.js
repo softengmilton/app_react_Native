@@ -1,43 +1,46 @@
-import { useState } from "react";
-import { SafeAreaView, Text, View, TextInput, StyleSheet, Button, Platform } from "react-native";
+import React, { useState, useEffect } from "react";
+import { SafeAreaView, View, Button, StyleSheet, Platform } from "react-native";
 import FormTextField from "../components/FormTextField";
 import axios from "axios";
 
-export default function () {
+export default function LoginScreen() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    device_name: Platform.OS + ' ' + Platform.Version // Corrected device_name initialization
+    device_name: Platform.OS
   });
 
+
   const handleChange = (name, value) => {
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async () => {
-    try {
-      console.log(formData);
-      const response = await axios.post('http://localhost:8000/api/login', formData);
-      console.log('Form submitted successfully:', response.data);
-      // Handle success, such as navigating to another screen or displaying a success message
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      // Handle error, such as displaying an error message to the user
-    }
+  const handleSubmit = () => {
+    console.log(formData);
+    axios({
+      method: "POST",
+      url: "http://192.168.0.180:8000/api/login",
+      data: formData,
+    })
+      .then(function (response) {
+        console.log(response.data);
+      })
+      .catch(function (error) {
+        console.log("Error occurred:", error);
+      });
   };
 
   return (
     <SafeAreaView style={styles.wrapper}>
       <View style={styles.container}>
         <FormTextField 
+          key="email"
           label="Email address:"
           value={formData.email}
           onChangeText={text => handleChange('email', text)}
         />
         <FormTextField 
+          key="password"
           label="Password:"
           secureTextEntry={true}
           value={formData.password}
