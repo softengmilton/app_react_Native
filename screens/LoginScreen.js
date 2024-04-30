@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { SafeAreaView, View, Button, StyleSheet, Platform } from "react-native";
-import FormTextField from "../components/FormTextField";
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Platform } from "react-native";
 import axios from "axios";
 
-export default function LoginScreen() {
+export default function LoginScreen(){
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     device_name: Platform.OS
   });
-
 
   const handleChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
@@ -31,34 +29,72 @@ export default function LoginScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.wrapper}>
+    <ImageBackground
+      style={styles.backgroundImage}
+    >
       <View style={styles.container}>
-        <FormTextField 
-          key="email"
-          label="Email address:"
+        <Text style={styles.title}>Ganna Media</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor="#ffffff"
           value={formData.email}
-          onChangeText={text => handleChange('email', text)}
+          onChangeText={(value) => handleChange('email', value)}
         />
-        <FormTextField 
-          key="password"
-          label="Password:"
-          secureTextEntry={true}
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor="#ffffff"
+          secureTextEntry
           value={formData.password}
-          onChangeText={text => handleChange('password', text)}
+          onChangeText={(value) => handleChange('password', value)}
         />
-        <Button title="Login" onPress={handleSubmit} />
+        <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </ImageBackground>
   );
-}
+};
 
-const styles= StyleSheet.create({
-  wrapper:{
-    backgroundColor: "#fff",
+const styles = StyleSheet.create({
+  backgroundImage: {
     flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center",
+    backgroundColor:"#ff3636"
   },
-  container:{
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
-    rowGap:16 
-  }
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#ffffff",
+    marginBottom: 20,
+  },
+  input: {
+    width: "100%",
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginBottom: 12,
+    color: "#ffffff",
+  },
+  loginButton: {
+    width: "100%",
+    backgroundColor: "#1db954",
+    borderRadius: 8,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#ffffff",
+  },
 });
