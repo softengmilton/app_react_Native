@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, Text, View } from 'react-native';
 import axios from 'axios';
-import Header from '../components/Header';
 
-export default function Home() {
+export default function Home({navigation}) {
   const [responseData, setResponseData] = useState(null);
 
   useEffect(() => {
@@ -23,11 +22,10 @@ export default function Home() {
 
   return (
     <SafeAreaView>
-      <Header/>
-      <Text>Home</Text>
+      {/* <Text>Home</Text> */}
       {responseData !== null ? (
         responseData.map((item, index) => (
-          <Text key={index}>{item.name}</Text> // Access title property
+          <Text key={index}>{item.volumeInfo.title}</Text> // Access title property
         ))
       ) : (
         <Text>Loading...</Text>

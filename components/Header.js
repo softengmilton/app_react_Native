@@ -2,12 +2,18 @@ import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Assuming you're using Ionicons for icons
 
-const MusicAppHeader = () => {
+export default function Header({navigation}) {
+  const handleProfile = () => {
+    navigation.navigate('Profile');
+  };
+
   return (
     <SafeAreaView style={{marginTop:20}}>
         <View style={styles.container}>
             {/* App Name */}
-            <Text style={styles.appName}>Ganna</Text>
+            <Text style={styles.appName}>Ganna {"\n"}
+            <Text style={{fontSize:20}}>Media.</Text>
+            </Text>
 
             {/* Search Bar */}
             <TextInput
@@ -19,7 +25,7 @@ const MusicAppHeader = () => {
 
 
             {/* User Profile */}
-            <TouchableOpacity style={styles.profileIcon}>
+            <TouchableOpacity style={styles.profileIcon} onPress={handleProfile}>
                 <Ionicons name="person-circle-outline" size={24} color="black" />
             </TouchableOpacity>
             </View>
@@ -43,6 +49,8 @@ const styles = {
   appName: {
     fontSize: 18,
     fontWeight: 'bold',
+    color:"#ff3636",
+    fontSize:12
   },
   searchBar: {
     flex: 1,
@@ -57,4 +65,3 @@ const styles = {
   },
 };
 
-export default MusicAppHeader;

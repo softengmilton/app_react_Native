@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Platform } from "react-native";
 import axios from "axios";
 
-export default function LoginScreen({navigation}){
+export default function SignupScreen({navigation}){
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    confirmPassword: '',
     device_name: Platform.OS
   });
 
@@ -17,7 +18,7 @@ export default function LoginScreen({navigation}){
     console.log(formData);
     axios({
       method: "POST",
-      url: "http://localhost:8000/api/login",
+      url: "http://localhost:8000/api/signup",
       data: formData,
     })
       .then(function (response) {
@@ -26,14 +27,6 @@ export default function LoginScreen({navigation}){
       .catch(function (error) {
         console.log("Error occurred:", error);
       });
-  };
-
-  const handleForgotPassword = () => {
-    navigation.navigate('Forgotpassword');
-  };
-
-  const handleSignup = () => {
-    navigation.navigate('Signup');
   };
 
   return (
@@ -59,14 +52,21 @@ export default function LoginScreen({navigation}){
           value={formData.password}
           onChangeText={(value) => handleChange('password', value)}
         />
-        <TouchableOpacity style={styles.loginButton} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Login</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          placeholderTextColor="#ffffff"
+          secureTextEntry
+          value={formData.confirmPassword}
+          onChangeText={(value) => handleChange('confirmPassword', value)}
+        />
+        <TouchableOpacity style={styles.signupButton} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Signup</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleForgotPassword}>
-          <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleSignup}>
-          <Text style={styles.signupText}>Signup</Text>
+        <TouchableOpacity>
+          <Text style={styles.loginText}>Already have an account? 
+            <Text style={styles.loginLink} onPress={() => navigation.navigate('Login')}>Login</Text>
+          </Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     color: "#ffffff",
   },
-  loginButton: {
+  signupButton: {
     width: "100%",
     backgroundColor: "#1db954",
     borderRadius: 8,
@@ -114,14 +114,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#ffffff",
   },
-  forgotPasswordText: {
+  loginText: {
     color: "#ffffff",
-    textDecorationLine: "underline",
-    marginBottom: 10,
+   
   },
-  signupText: {
-    color: "#ffffff",
+  loginLink:{
     textDecorationLine: "underline",
   }
-  
 });

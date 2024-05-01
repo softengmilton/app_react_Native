@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const RecomendedScreen = () => {
+const RecomendedScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Recommended</Text>
