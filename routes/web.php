@@ -14,5 +14,18 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('Dashboard.Dashboard');
 });
+Route::get('/user', function () {
+    return view('User.User');
+});
+Route::get('/addmusic', function () {
+    return view('Music.AddMusic');
+});
+Route::get('/musiclist', function () {
+    return view('Music.MusicList');
+});
+
+
+
+
