@@ -2,22 +2,25 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Assuming you're using Expo for icons
 
-const SystemBar = ({ navigation }) => {
+export default function SystemBar({navigation}) {
+
+    const handleReco= ()=>{
+        navigation.navigate('Reconmended');
+    }
+    const handleHome= ()=>{
+        navigation.navigate('Home');
+
+    }
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.iconContainer}
-        onPress={() => navigation.navigate('Home')}
-      >
-        <Ionicons name="ios-home" size={24} color="black" />
-        <Text style={styles.iconText}>Home</Text>
+      <TouchableOpacity style={styles.iconContainer}  onPress={handleHome}>
+        <Ionicons name="home" size={24} color="black" />
+        <Text style={styles.iconText}></Text>
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.iconContainer}
-        onPress={() => navigation.navigate('Recommendations')}
-      >
-        <Ionicons name="ios-star" size={24} color="black" />
-        <Text style={styles.iconText}>Recommendations</Text>
+      <TouchableOpacity style={styles.iconContainer} onPress={handleReco}>
+        <Ionicons name="sunny" size={24} color="black" />
+        <Text style={styles.iconText}></Text>
       </TouchableOpacity>
     </View>
   );
@@ -26,7 +29,7 @@ const SystemBar = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 10,
@@ -35,7 +38,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000000', // Shadow color for iOS
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: -2, // Negative value to place shadow at the bottom
     },
     shadowOpacity: 0.2,
     shadowRadius: 2,
@@ -49,9 +52,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   iconText: {
-    marginLeft: 5,
+    marginLeft: 7,
     fontSize: 16,
   },
 });
 
-export default SystemBar;
+

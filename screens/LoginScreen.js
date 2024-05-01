@@ -14,18 +14,19 @@ export default function LoginScreen({navigation}){
   };
 
   const handleSubmit = () => {
-    console.log(formData);
-    axios({
-      method: "POST",
-      url: "http://localhost:8000/api/login",
-      data: formData,
-    })
-      .then(function (response) {
-        console.log(response.data);
-      })
-      .catch(function (error) {
-        console.log("Error occurred:", error);
-      });
+    // console.log(formData);
+    // axios({
+    //   method: "POST",
+    //   url: "http://localhost:8000/api/login",
+    //   data: formData,
+    // })
+    //   .then(function (response) {
+    //     console.log(response.data);
+    //   })
+    //   .catch(function (error) {
+    //     console.log("Error occurred:", error);
+    //   });
+    navigation.navigate('Home');
   };
 
   const handleForgotPassword = () => {
