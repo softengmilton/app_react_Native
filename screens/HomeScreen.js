@@ -6,15 +6,16 @@ import SystemBar from '../components/SystemBar';
 
 export default function Home({ navigation }) {
   const [responseData, setResponseData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Fetch data from an API
-    axios.get('https://www.googleapis.com/books/v1/volumes?q=harry+potter')
+    axios.get('http://10.0.2.2:8000/api/helodata')
       .then(response => {
         // Handle successful response
         console.log(response.data);
         // Set the response data in state
-        setResponseData(response.data.items); // Access items array
+        setResponseData(response.data); // Access items array
       })
       .catch(error => {
         // Handle error
@@ -29,9 +30,12 @@ export default function Home({ navigation }) {
         <Text style={styles.heading}>Home</Text>
 
         {/* <Text>Home</Text> */}
-        {responseData !== null ? (
-          responseData.map((item, index) => (
-            <Text key={index}>{item.volumeInfo.title}</Text> // Access title property
+        {responseData!=null ? (
+          responseData.map((data, index) => (
+            <View key={index}>
+                <Text>{data.name}</Text>
+                <Text>{data.email}</Text>
+            </View> // Access title property
           ))
         ) : (
           <Text>Loading...</Text>
