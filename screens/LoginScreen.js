@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Platform } from "react-native";
 import axios from "axios";
+import { getToken } from "../utils/Authtoken";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
-export default function LoginScreen({navigation}){
+export default function LoginScreen({ navigation }) {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     device_name: Platform.OS
   });
+  const [error, setError] = useState(null);
 
   const handleChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
@@ -20,13 +24,22 @@ export default function LoginScreen({navigation}){
       url: "http://10.0.2.2:8000/api/login",
       data: formData,
     })
-      .then(function (response) {
+      .then(async function (response) {
+        const authenticationData = {
+          token: response.data
+        };
+        if (response.data) {
+          await AsyncStorage.setItem('token', authenticationData.token);
+          navigation.navigate('Home');
+        } else {
+          console.log("Error: Token not found in authentication data");
+        }
         console.log(response.data);
       })
       .catch(function (error) {
+        setError("*Your credential doesn't match"); // Set error message
         console.log("Error occurred:", error);
       });
-    navigation.navigate('Home');
   };
 
   const handleForgotPassword = () => {
@@ -43,8 +56,9 @@ export default function LoginScreen({navigation}){
     >
       <View style={styles.container}>
         <Text style={styles.title}>Ganna {'\n'}
-           <Text style={{fontSize:24}}>  Media.</Text>
+          <Text style={{ fontSize: 24 }}>  Media.</Text>
         </Text>
+        {error && <Text style={styles.errorText}>{error}</Text>}
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -79,7 +93,7 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: "cover",
     justifyContent: "center",
-    backgroundColor:"#ff3636"
+    backgroundColor: "#ff3636"
   },
   container: {
     flex: 1,
@@ -123,6 +137,15 @@ const styles = StyleSheet.create({
   signupText: {
     color: "#ffffff",
     textDecorationLine: "underline",
+  },
+  errorText: {
+    width: "100%",
+    backgroundColor: '#fff',
+    color: "red",
+    marginBottom: 10,
+    textAlign: "center",
+    paddingVertical: 5,
+    borderRadius: 3,
   }
-  
+
 });

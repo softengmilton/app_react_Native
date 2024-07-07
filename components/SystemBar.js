@@ -2,24 +2,24 @@ import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Assuming you're using Expo for icons
 
-export default function SystemBar({navigation}) {
+export default function SystemBar({ navigation }) {
 
-    const handleReco= ()=>{
-        navigation.navigate('Reconmended');
-    }
-    const handleHome= ()=>{
-        navigation.navigate('Home');
+  const handleReco = () => {
+    navigation.navigate('Reconmended');
+  }
+  const handleHome = () => {
+    navigation.navigate('Home');
 
-    }
+  }
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.iconContainer}  onPress={handleHome}>
-        <Ionicons name="home" size={24} color="black" />
+      <TouchableOpacity style={styles.iconContainer} onPress={handleHome}>
+        <Ionicons name="home" size={24} color="#ff3636" />
         <Text style={styles.iconText}></Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.iconContainer} onPress={handleReco}>
-        <Ionicons name="sunny" size={24} color="black" />
+        <Ionicons name="sunny" size={24} color="#ff3636" />
         <Text style={styles.iconText}></Text>
       </TouchableOpacity>
     </View>
@@ -32,8 +32,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 10,
-    backgroundColor: '#ffffff', // Background color of the system bar
+    paddingVertical: 18,
+    backgroundColor: '#ddd', // Background color of the system bar
     elevation: 4, // Shadow for Android
     shadowColor: '#000000', // Shadow color for iOS
     shadowOffset: {

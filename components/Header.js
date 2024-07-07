@@ -2,33 +2,33 @@ import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Assuming you're using Ionicons for icons
 
-export default function Header({navigation}) {
+export default function Header({ navigation }) {
   const handleProfile = () => {
     navigation.navigate('Profile');
   };
 
   return (
-    <SafeAreaView style={{marginTop:20}}>
-        <View style={styles.container}>
-            {/* App Name */}
-            <Text style={styles.appName}>Ganna {"\n"}
-            <Text style={{fontSize:20}}>Media.</Text>
-            </Text>
+    <SafeAreaView style={{ marginTop: 20 }}>
+      <View style={styles.container}>
+        {/* App Name */}
+        <Text style={styles.appName}>Ganna {"\n"}
+          <Text style={{ fontSize: 20 }}>Media.</Text>
+        </Text>
 
-            {/* Search Bar */}
-            <TextInput
-                style={styles.searchBar}
-                placeholder="Search for artists, songs, or albums"
-            />
+        {/* Search Bar */}
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Search for artists, songs, or albums"
+        />
 
-            {/* Navigation Icons */}
+        {/* Navigation Icons */}
 
 
-            {/* User Profile */}
-            <TouchableOpacity style={styles.profileIcon} onPress={handleProfile}>
-                <Ionicons name="person-circle-outline" size={24} color="black" />
-            </TouchableOpacity>
-            </View>
+        {/* User Profile */}
+        <TouchableOpacity style={styles.profileIcon} onPress={handleProfile}>
+          <Ionicons name="person-circle-outline" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
 
 
@@ -49,8 +49,8 @@ const styles = {
   appName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color:"#ff3636",
-    fontSize:12
+    color: "#ff3636",
+    fontSize: 12
   },
   searchBar: {
     flex: 1,

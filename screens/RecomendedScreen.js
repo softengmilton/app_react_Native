@@ -3,11 +3,12 @@ import { View, Text, StyleSheet } from 'react-native';
 import Header from '../components/Header';
 import SystemBar from '../components/SystemBar';
 
-const RecomendedScreen = ({navigation}) => {
+const RecomendedScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
-      <Header/>
-      <SystemBar navigation={navigation} />  
+      <Header navigation={navigation} />
+
+      <SystemBar navigation={navigation} />
       <Text style={styles.heading}>Recommended</Text>
       {/* Your recommended music items can go here */}
     </View>

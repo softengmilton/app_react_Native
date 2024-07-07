@@ -3,6 +3,7 @@ import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
 import axios from 'axios';
 import Header from '../components/Header';
 import SystemBar from '../components/SystemBar';
+// import PopularCarosual from '../components/PopularCarosual';
 
 export default function Home({ navigation }) {
   const [responseData, setResponseData] = useState(null);
@@ -26,22 +27,29 @@ export default function Home({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Header />
+        <Header navigation={navigation} />
         <Text style={styles.heading}>Home</Text>
 
         {/* <Text>Home</Text> */}
-        {responseData!=null ? (
+        {responseData != null ? (
           responseData.map((data, index) => (
             <View key={index}>
-                <Text>{data.name}</Text>
-                <Text>{data.email}</Text>
+              <Text>{data.name}</Text>
+              <Text>{data.email}</Text>
             </View> // Access title property
           ))
         ) : (
           <Text>Loading...</Text>
         )}
       </View>
+
+      <View>
+        {/* <PopularCarosual/> */}
+
+      </View>
+
       <SystemBar navigation={navigation} />
+
     </SafeAreaView>
   );
 }

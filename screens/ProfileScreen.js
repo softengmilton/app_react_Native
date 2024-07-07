@@ -1,35 +1,62 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from "react-native";
 import axios from "axios";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getToken } from "../utils/Authtoken"; // Assuming you have a utility function to get the token
 
-export default function ProfileScreen({navigation}) {
+export default function ProfileScreen({ navigation }) {
   const [userData, setUserData] = useState(null);
+  const [sessionId, setSessionId] = useState(null); // State to store session ID
 
   useEffect(() => {
-    // Fetch user data from backend API
-    axios.get("http://localhost:8000/api/user")
-      .then(response => {
-        setUserData(response.data);
-      })
-      .catch(error => {
-        console.log("Error fetching user data:", error);
-      });
+    const fetchUserData = async () => {
+      try {
+        const token = await getToken(); // Fetch token from AsyncStorage or state
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        };
+        // Fetch user data from backend API
+        const response = await axios.get("http://10.0.2.2:8000/api/user", config);
+        setUserData(response.data); // Assuming session_id is returned by the API
+      } catch (error) {
+        console.log("Error fetching user data:", error.message);
+        // Handle error (e.g., show error message)
+      }
+    };
+
+    fetchUserData();
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('token'); // Clear token from AsyncStorage
+      navigation.navigate('Login'); // Navigate to login screen
+    } catch (error) {
+      console.error('Error removing token:', error.message);
+      // Handle error (e.g., show error message)
+    }
+  };
 
   return (
     <ImageBackground
       style={styles.backgroundImage}
+      source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5K8NouS0U2in2pAsVVhcGiY1V6eGYEWBjSA&s' }}
     >
       <View style={styles.container}>
         <Text style={styles.title}>User Profile</Text>
-        {userData && (
+        {userData ? (
           <View style={styles.profileInfo}>
-            <Text style={styles.infoText}>Name: </Text> \\{userData.name}
-            <Text style={styles.infoText}>Email: {userData.email}</Text>
+            <Text style={styles.infoText}>{userData.name}</Text>
+            <Text style={styles.infoText}>{userData.email}</Text>
+            {/* Display session ID */}
             {/* Add more user details here */}
           </View>
+        ) : (
+          <Text style={styles.infoText}>Loading...</Text> // Show loading text while fetching data
         )}
-        <TouchableOpacity style={styles.logoutButton} onPress={() => console.log("Logout")}>
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.buttonText}>Logout</Text>
         </TouchableOpacity>
       </View>
