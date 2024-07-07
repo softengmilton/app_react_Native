@@ -1,8 +1,12 @@
 <?php
 
+use App\Http\Controllers\Api\Auth\RegisteredUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +20,8 @@ use App\Models\User;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    $user = Auth::user();
+    return  response()->json(['user' => $user]);
 });
 
 Route::post('/login', function (Request $request) {
@@ -25,20 +30,27 @@ Route::post('/login', function (Request $request) {
         'password' => 'required',
         'device_name' => 'required',
     ]);
- 
+
     $user = User::where('email', $request->email)->first();
- 
-    if (! $user || ! Hash::check($request->password, $user->password)) {
+
+    if (!$user || !Hash::check($request->password, $user->password)) {
         throw ValidationException::withMessages([
             'email' => ['The provided credentials are incorrect.'],
         ]);
     }
- 
+
     return $user->createToken($request->device_name)->plainTextToken;
 });
 
-Route::get('/helodata', function () {
-    $data = User::take(5)->get(); // Use the correct syntax to fetch all users from the User model
 
-    return response()->json($data); // Return the data as JSON response
+
+Route::post('/register', [RegisteredUserController::class, 'store']);
+
+
+
+
+Route::get('/helodata', function () {
+    $data = User::take(5)->get(); // Use the correct syntax to fetch the first 5 users from the User model
+
+    return response()->json($data); // Return the data as a JSON response
 });
