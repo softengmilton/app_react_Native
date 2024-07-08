@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, Text, View, StyleSheet } from 'react-native';
+import { SafeAreaView, Text, View, StyleSheet, ImageBackground } from 'react-native';
 import axios from 'axios';
 import Header from '../components/Header';
 import SystemBar from '../components/SystemBar';
-// import PopularCarosual from '../components/PopularCarosual';
+import welcomeImage from './../assets/homescreen2.png';
 
 export default function Home({ navigation }) {
   const [responseData, setResponseData] = useState(null);
@@ -24,47 +24,67 @@ export default function Home({ navigation }) {
       });
   }, []);
 
+
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Header navigation={navigation} />
-        <Text style={styles.heading}>Home</Text>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
 
-        {/* <Text>Home</Text> */}
-        {responseData != null ? (
-          responseData.map((data, index) => (
-            <View key={index}>
-              <Text>{data.name}</Text>
-              <Text>{data.email}</Text>
-            </View> // Access title property
-          ))
-        ) : (
-          <Text>Loading...</Text>
-        )}
+        <ImageBackground
+          source={welcomeImage} // Replace with your image path
+          style={styles.background}
+          resizeMode="cover"
+        >
+          <Header navigation={navigation} />
+          <View style={styles.content}>
+            <Text style={styles.heading}>Home</Text>
+
+            {responseData != null ? (
+              responseData.map((data, index) => (
+                <View key={index} style={styles.userData}>
+                  <Text>{data.name}</Text>
+                  <Text>{data.email}</Text>
+                </View>
+              ))
+            ) : (
+              <Text>Loading...</Text>
+            )}
+
+          </View>
+
+          <SystemBar navigation={navigation} />
+        </ImageBackground>
       </View>
-
-      <View>
-        {/* <PopularCarosual/> */}
-
-      </View>
-
-      <SystemBar navigation={navigation} />
-
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+  },
+  background: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
   },
   content: {
     flex: 1,
+    paddingTop: 20, // Adjust as needed to move content away from the top
+    paddingHorizontal: 20, // Add padding horizontally to center align content
   },
   heading: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
+    color: '#fff', // Optional: Set text color to contrast with background
+  },
+  userData: {
+    backgroundColor: 'rgba(255,255,255,0.7)', // Optional: Semi-transparent background for user data
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 5,
   },
 });

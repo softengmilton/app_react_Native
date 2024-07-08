@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Dimensions, Text, View } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 
-export default function () {
+function PopularCarosual() {
     const width = Dimensions.get('window').width;
     return (
         <View style={{ flex: 1 }}>
@@ -11,7 +11,7 @@ export default function () {
                 width={width}
                 height={width / 2}
                 autoPlay={true}
-                data={[...new Array(6).keys()]}
+                data={data}
                 scrollAnimationDuration={1000}
                 onSnapToItem={(index) => console.log('current index:', index)}
                 renderItem={({ index }) => (
@@ -31,3 +31,5 @@ export default function () {
         </View>
     );
 }
+
+export default PopularCarosual;

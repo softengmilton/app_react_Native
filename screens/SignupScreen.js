@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Platform, Alert } from "react-native";
 import axios from "axios";
+import welcomeImage from './../assets/homescreen2.png'
 
 export default function SignupScreen({ navigation }) {
   const [formData, setFormData] = useState({
@@ -69,12 +70,23 @@ export default function SignupScreen({ navigation }) {
 
   return (
     <ImageBackground
+      source={welcomeImage}
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
-        <Text style={styles.title}>Ganna {'\n'}
-          <Text style={{ fontSize: 24 }}>  Media.</Text>
-        </Text>
+        <View style={styles.titleContainer}>
+          <View style={styles.logoBackground}>
+            <Text style={styles.logoText}>
+              MC
+            </Text>
+          </View>
+          <Text style={styles.appNameText}>
+            Movie Cinema
+          </Text>
+          <Text style={styles.descriptionText}>
+            Watch and find movies that bring your mood back.
+          </Text>
+        </View>
         <TextInput
           style={styles.input}
           placeholder="Name"
@@ -82,6 +94,7 @@ export default function SignupScreen({ navigation }) {
           value={formData.name}
           onChangeText={(value) => handleChange('name', value)}
         />
+        {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -111,10 +124,8 @@ export default function SignupScreen({ navigation }) {
         <TouchableOpacity style={styles.signupButton} onPress={handleSubmit}>
           <Text style={styles.buttonText}>Signup</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.loginText}>Already have an account?
-            <Text style={styles.loginLink} onPress={() => navigation.navigate('Login')}>Login</Text>
-          </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <Text style={styles.loginText}>Already have an account? <Text style={styles.loginLink}>Login</Text></Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
@@ -126,7 +137,7 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: "cover",
     justifyContent: "center",
-    backgroundColor: "#ff3636"
+    backgroundColor: "#ff3636",
   },
   container: {
     flex: 1,
@@ -134,10 +145,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
   },
-  title: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: "#ffffff",
+  titleContainer: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  logoBackground: {
+    backgroundColor: '#ff3636',
+    padding: 16,
+    borderRadius: 20,
+    marginBottom: 10,
+  },
+  logoText: {
+    color: 'white',
+    fontSize: 36,
+    fontWeight: 'bold',
+    letterSpacing: 2,
+  },
+  appNameText: {
+    color: 'white',
+    fontSize: 36,
+    fontWeight: 'bold',
+    letterSpacing: 2,
+    marginBottom: 10,
+  },
+  descriptionText: {
+    color: 'white',
+    fontSize: 18,
+    letterSpacing: 1,
+    textAlign: 'center',
     marginBottom: 20,
   },
   input: {
@@ -151,7 +186,7 @@ const styles = StyleSheet.create({
   },
   signupButton: {
     width: "100%",
-    backgroundColor: "#1db954",
+    backgroundColor: "#ff3636",
     borderRadius: 8,
     paddingVertical: 14,
     alignItems: "center",

@@ -1,17 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ImageBackground, Platform } from "react-native";
 import axios from "axios";
-import { getToken } from "../utils/Authtoken";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import welcomeImage from './../assets/welcome.png'
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen() {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     device_name: Platform.OS
   });
   const [error, setError] = useState(null);
+  const navigation = useNavigation();
 
   const handleChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
@@ -50,14 +51,32 @@ export default function LoginScreen({ navigation }) {
     navigation.navigate('Signup');
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      setFormData({ email: '', password: '', device_name: Platform.OS });
+      setError(null);
+    }, [])
+  );
+
   return (
     <ImageBackground
+      source={welcomeImage}
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
-        <Text style={styles.title}>Ganna {'\n'}
-          <Text style={{ fontSize: 24 }}>  Media.</Text>
-        </Text>
+        <View style={styles.titleContainer}>
+          <View style={styles.logoBackground}>
+            <Text style={styles.logoText}>
+              MC
+            </Text>
+          </View>
+          <Text style={styles.appNameText}>
+            Movie Cinema
+          </Text>
+          <Text style={styles.descriptionText}>
+            Watch and find movies that bring your mood back.
+          </Text>
+        </View>
         {error && <Text style={styles.errorText}>{error}</Text>}
         <TextInput
           style={styles.input}
@@ -93,7 +112,6 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: "cover",
     justifyContent: "center",
-    backgroundColor: "#ff3636"
   },
   container: {
     flex: 1,
@@ -101,10 +119,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
   },
-  title: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: "#ffffff",
+  titleContainer: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  logoBackground: {
+    backgroundColor: '#ff3636',
+    padding: 16,
+    borderRadius: 20,
+    marginBottom: 10,
+  },
+  logoText: {
+    color: 'white',
+    fontSize: 36,
+    fontWeight: 'bold',
+    letterSpacing: 2,
+  },
+  appNameText: {
+    color: 'white',
+    fontSize: 36,
+    fontWeight: 'bold',
+    letterSpacing: 2,
+    marginBottom: 10,
+  },
+  descriptionText: {
+    color: 'white',
+    fontSize: 18,
+    letterSpacing: 1,
+    textAlign: 'center',
     marginBottom: 20,
   },
   input: {
@@ -118,7 +160,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     width: "100%",
-    backgroundColor: "#1db954",
+    backgroundColor: "#ff3636",
     borderRadius: 8,
     paddingVertical: 14,
     alignItems: "center",
@@ -140,12 +182,11 @@ const styles = StyleSheet.create({
   },
   errorText: {
     width: "100%",
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     color: "red",
     marginBottom: 10,
     textAlign: "center",
     paddingVertical: 5,
     borderRadius: 3,
   }
-
 });

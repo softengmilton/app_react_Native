@@ -19,7 +19,15 @@ export default function SystemBar({ navigation }) {
         <Text style={styles.iconText}></Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.iconContainer} onPress={handleReco}>
-        <Ionicons name="sunny" size={24} color="#ff3636" />
+        <Ionicons name="disc-outline" size={24} color="#ff3636" />
+        <Text style={styles.iconText}></Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.iconContainer} onPress={handleReco}>
+        <Ionicons name="heart-outline" size={24} color="#ff3636" />
+        <Text style={styles.iconText}></Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.iconContainer} onPress={handleReco}>
+        <Ionicons name="person-circle-outline" size={24} color="#ff3636" />
         <Text style={styles.iconText}></Text>
       </TouchableOpacity>
     </View>

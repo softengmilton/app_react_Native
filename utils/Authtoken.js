@@ -9,6 +9,15 @@ export const getToken = async () => {
     return null;
   }
 };
+export const getID = async () => {
+  try {
+    const token = await AsyncStorage.getItem('id');
+    return token;
+  } catch (error) {
+    console.error('Error retrieving id:', error);
+    return null;
+  }
+};
 
 export const removeToken = async () => {
   try {

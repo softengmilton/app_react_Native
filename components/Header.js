@@ -11,9 +11,11 @@ export default function Header({ navigation }) {
     <SafeAreaView style={{ marginTop: 20 }}>
       <View style={styles.container}>
         {/* App Name */}
-        <Text style={styles.appName}>Ganna {"\n"}
-          <Text style={{ fontSize: 20 }}>Media.</Text>
-        </Text>
+        <View style={styles.logoBackground}>
+          <Text style={styles.logoText}>
+            MC
+          </Text>
+        </View>
 
         {/* Search Bar */}
         <TextInput
@@ -21,17 +23,12 @@ export default function Header({ navigation }) {
           placeholder="Search for artists, songs, or albums"
         />
 
-        {/* Navigation Icons */}
-
-
         {/* User Profile */}
         <TouchableOpacity style={styles.profileIcon} onPress={handleProfile}>
           <Ionicons name="person-circle-outline" size={24} color="black" />
         </TouchableOpacity>
       </View>
     </SafeAreaView>
-
-
   );
 };
 
@@ -42,15 +39,6 @@ const styles = {
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: '#ffffff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-  },
-  appName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: "#ff3636",
-    fontSize: 12
   },
   searchBar: {
     flex: 1,
@@ -58,10 +46,23 @@ const styles = {
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#f2f2f2',
+    borderWidth: 1, // Added this line for border
+    borderColor: '#f2f2f2', // Color of the border
+    color: '#000', // Changed to black for better visibility of text
+    backgroundColor: '#fff', // Background color for better contrast
   },
   profileIcon: {
     marginLeft: 16,
   },
+  logoBackground: {
+    paddingHorizontal: 5,
+    borderRadius: 20,
+    marginBottom: 10,
+  },
+  logoText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+    letterSpacing: 2,
+  },
 };
-

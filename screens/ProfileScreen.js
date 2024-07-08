@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from "react-native";
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getToken } from "../utils/Authtoken"; // Assuming you have a utility function to get the token
+import { getToken } from "../utils/Authtoken";
+import welcomeImage from './../assets/homescreen2.png';
 
 export default function ProfileScreen({ navigation }) {
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState();
   const [sessionId, setSessionId] = useState(null); // State to store session ID
 
   useEffect(() => {
@@ -17,11 +18,16 @@ export default function ProfileScreen({ navigation }) {
             Authorization: `Bearer ${token}`,
           }
         };
+
         // Fetch user data from backend API
         const response = await axios.get("http://10.0.2.2:8000/api/user", config);
+        console.log("Response data:", response.data);
         setUserData(response.data); // Assuming session_id is returned by the API
       } catch (error) {
         console.log("Error fetching user data:", error.message);
+        if (error.response) {
+          console.log("Error response data:", error.response.data);
+        }
         // Handle error (e.g., show error message)
       }
     };
@@ -42,16 +48,15 @@ export default function ProfileScreen({ navigation }) {
   return (
     <ImageBackground
       style={styles.backgroundImage}
-      source={{ uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5K8NouS0U2in2pAsVVhcGiY1V6eGYEWBjSA&s' }}
+      source={welcomeImage}
+      resizeMode="cover"
     >
       <View style={styles.container}>
         <Text style={styles.title}>User Profile</Text>
         {userData ? (
           <View style={styles.profileInfo}>
-            <Text style={styles.infoText}>{userData.name}</Text>
-            <Text style={styles.infoText}>{userData.email}</Text>
-            {/* Display session ID */}
-            {/* Add more user details here */}
+            <Text style={styles.infoText}>Name: {userData.name}</Text>
+            <Text style={styles.infoText}>Email: {userData.email}</Text>
           </View>
         ) : (
           <Text style={styles.infoText}>Loading...</Text> // Show loading text while fetching data
@@ -62,14 +67,13 @@ export default function ProfileScreen({ navigation }) {
       </View>
     </ImageBackground>
   );
-};
+}
 
 const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
     resizeMode: "cover",
     justifyContent: "center",
-    backgroundColor: "#ff3636"
   },
   container: {
     flex: 1,
@@ -96,7 +100,7 @@ const styles = StyleSheet.create({
   },
   logoutButton: {
     width: "100%",
-    backgroundColor: "#1db954",
+    backgroundColor: "#ff3636",
     borderRadius: 8,
     paddingVertical: 14,
     alignItems: "center",
@@ -105,5 +109,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#ffffff",
-  }
+  },
 });
