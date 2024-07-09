@@ -11,6 +11,12 @@ export default function SystemBar({ navigation }) {
     navigation.navigate('Home');
 
   }
+  const handleProfile = () => {
+    navigation.navigate('MovieDetail');
+  };
+  const wishlist = () => {
+    navigation.navigate('Wishlist');
+  };
 
   return (
     <View style={styles.container}>
@@ -22,11 +28,11 @@ export default function SystemBar({ navigation }) {
         <Ionicons name="disc-outline" size={24} color="#ff3636" />
         <Text style={styles.iconText}></Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.iconContainer} onPress={handleReco}>
+      <TouchableOpacity style={styles.iconContainer} onPress={wishlist}>
         <Ionicons name="heart-outline" size={24} color="#ff3636" />
         <Text style={styles.iconText}></Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.iconContainer} onPress={handleReco}>
+      <TouchableOpacity style={styles.iconContainer} onPress={handleProfile}>
         <Ionicons name="person-circle-outline" size={24} color="#ff3636" />
         <Text style={styles.iconText}></Text>
       </TouchableOpacity>

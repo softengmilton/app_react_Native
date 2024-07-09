@@ -1,60 +1,79 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, Text, View, StyleSheet, ImageBackground } from 'react-native';
+import { SafeAreaView, Text, View, StyleSheet, ImageBackground, Dimensions, ScrollView, FlatList } from 'react-native';
 import axios from 'axios';
 import Header from '../components/Header';
 import SystemBar from '../components/SystemBar';
 import welcomeImage from './../assets/homescreen2.png';
+import CarouselComponent from '../components/CarouselComponent';
+
+const { width: screenWidth } = Dimensions.get('window');
 
 export default function Home({ navigation }) {
-  const [responseData, setResponseData] = useState(null);
+  const [responseData, setResponseData] = useState([]);
+  const [popularMovies, setPopularMovies] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch data from an API
+    // Fetching trending data
     axios.get('http://10.0.2.2:8000/api/helodata')
       .then(response => {
-        // Handle successful response
-        console.log(response.data);
-        // Set the response data in state
-        setResponseData(response.data); // Access items array
+        setResponseData(response.data);
+        setLoading(false);
       })
       .catch(error => {
-        // Handle error
-        console.error('Error fetching data:', error);
+        console.error('Error fetching trending data:', error);
+      });
+
+    // Fetching popular movies
+    axios.get('http://10.0.2.2:8000/api/helodata')
+      .then(response => {
+        setPopularMovies(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching popular movies:', error);
       });
   }, []);
 
+  // Render item function for FlatList
+  const renderMovieItem = ({ item }) => (
+    <View style={styles.movieItem}>
+      <Text style={styles.movieTitle}>{item.title}</Text>
+      {/* Add any other movie details you want to display */}
+    </View>
+  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
+        <ScrollView>
+          <ImageBackground
+            source={welcomeImage}
+            style={styles.background}
+            resizeMode="cover"
+          >
+            <Header navigation={navigation} />
+            <View style={styles.content}>
+              <Text style={styles.heading}>Trending</Text>
+              {loading ? (
+                <Text>Loading...</Text>
+              ) : (
+                <CarouselComponent data={responseData} />
+              )}
 
-        <ImageBackground
-          source={welcomeImage} // Replace with your image path
-          style={styles.background}
-          resizeMode="cover"
-        >
-          <Header navigation={navigation} />
-          <View style={styles.content}>
-            <Text style={styles.heading}>Home</Text>
-
-            {responseData != null ? (
-              responseData.map((data, index) => (
-                <View key={index} style={styles.userData}>
-                  <Text>{data.name}</Text>
-                  <Text>{data.email}</Text>
-                </View>
-              ))
-            ) : (
-              <Text>Loading...</Text>
-            )}
-
-          </View>
-
-          <SystemBar navigation={navigation} />
-        </ImageBackground>
+              {/* Popular Movies Section */}
+              <Text style={styles.heading}>Popular Movies</Text>
+              <FlatList
+                data={popularMovies}
+                renderItem={renderMovieItem}
+                keyExtractor={item => item.id.toString()}
+                numColumns={2}
+              />
+            </View>
+          </ImageBackground>
+        </ScrollView>
       </View>
-    </SafeAreaView>
+      <SystemBar navigation={navigation} />
+    </SafeAreaView >
   );
 }
 
@@ -72,19 +91,29 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingTop: 20, // Adjust as needed to move content away from the top
-    paddingHorizontal: 20, // Add padding horizontally to center align content
+    paddingTop: 20,
+    paddingHorizontal: 20,
   },
   heading: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
-    color: '#fff', // Optional: Set text color to contrast with background
+    marginTop: 20,
+    color: '#fff',
   },
-  userData: {
-    backgroundColor: 'rgba(255,255,255,0.7)', // Optional: Semi-transparent background for user data
+  movieItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 10,
     padding: 10,
-    marginVertical: 5,
-    borderRadius: 5,
+    backgroundColor: '#ccc',
+    borderRadius: 10,
+    height: 150,
+  },
+  movieTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });

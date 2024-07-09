@@ -67,7 +67,7 @@ export default function LoginScreen() {
         <View style={styles.titleContainer}>
           <View style={styles.logoBackground}>
             <Text style={styles.logoText}>
-              MC
+              QB
             </Text>
           </View>
           <Text style={styles.appNameText}>

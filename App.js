@@ -13,6 +13,8 @@ import RecomendedScreen from "./screens/RecomendedScreen";
 import SystemBar from "./components/SystemBar";
 import Header from "./components/Header";
 import Authtoken from "./utils/Authtoken";
+import WishlistScreen from "./screens/WishlistScreen";
+import MovieDetailScreen from "./screens/MovieDetailScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -55,6 +57,8 @@ export default function App() {
         <Stack.Screen name="Forgotpassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Reconmended" component={RecomendedScreen} />
+        <Stack.Screen name="Wishlist" component={WishlistScreen} />
+        <Stack.Screen name="MovieDetail" component={MovieDetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
