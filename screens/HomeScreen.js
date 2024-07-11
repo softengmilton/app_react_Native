@@ -67,6 +67,9 @@ export default function Home({ navigation }) {
                 renderItem={renderMovieItem}
                 keyExtractor={item => item.id.toString()}
                 numColumns={2}
+                scrollEnabled={false}
+                horizontal={false}
+                showsVerticalScrollIndicator={false}
               />
             </View>
           </ImageBackground>

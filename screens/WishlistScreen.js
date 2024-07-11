@@ -60,6 +60,9 @@ export default function WishlistScreen({ navigation }) {
                             numColumns={1}
                             ListHeaderComponent={ListHeader}
                             contentContainerStyle={styles.flatListContainer}
+                            scrollEnabled={false}
+                            horizontal={false}
+                            showsVerticalScrollIndicator={false}
                         />
                     )}
                     <SystemBar navigation={navigation} />

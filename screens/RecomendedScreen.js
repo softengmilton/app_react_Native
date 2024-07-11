@@ -57,6 +57,9 @@ export default function RecomendedScreen({ navigation }) {
               numColumns={2}
               ListHeaderComponent={ListHeader}
               contentContainerStyle={styles.flatListContainer}
+              scrollEnabled={false}
+              horizontal={false}
+              showsVerticalScrollIndicator={false}
             />
           )}
           <SystemBar navigation={navigation} />
