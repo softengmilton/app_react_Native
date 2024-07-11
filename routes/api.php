@@ -50,7 +50,8 @@ Route::post('/register', [RegisteredUserController::class, 'store']);
 
 
 Route::get('/helodata', function () {
-    $data = User::take(5)->get(); // Use the correct syntax to fetch the first 5 users from the User model
+    $data = User::take(11)->get(); // Use the correct syntax to fetch the first 5 users from the User model
 
     return response()->json($data); // Return the data as a JSON response
 });
+

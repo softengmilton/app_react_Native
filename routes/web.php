@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\General\CategoryController;
+use App\Http\Controllers\General\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,16 +18,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('Dashboard.Dashboard');
 });
-Route::get('/user', function () {
-    return view('User.User');
-});
-Route::get('/addmusic', function () {
-    return view('Music.AddMusic');
-});
-Route::get('/musiclist', function () {
-    return view('Music.MusicList');
-});
+Route::resource('/user', UserController::class);
 
-
-
-
+Route::resource('/category', CategoryController::class);

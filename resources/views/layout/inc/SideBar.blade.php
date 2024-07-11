@@ -18,6 +18,15 @@
                 <a href="{{url('/user')}}"><i class="uil uil-browser me-2"></i>Users<span class="badge bg-danger rounded-pill ms-2">New</span></a>
             </li>
             <li class="sidebar-dropdown">
+                <a href="javascript:void(0)"><i class="uil uil-user me-2 d-inline-block"></i>Category</a>
+                <div class="sidebar-submenu">
+                    <ul>
+                        <li><a href="{{url('/category/create')}}">Add category</a></li>
+                        <li><a href="{{url('/category')}}">Category List</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="sidebar-dropdown">
                 <a href="javascript:void(0)"><i class="uil uil-user me-2 d-inline-block"></i>Music</a>
                 <div class="sidebar-submenu">
                     <ul>

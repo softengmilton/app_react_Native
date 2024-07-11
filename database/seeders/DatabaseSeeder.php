@@ -20,5 +20,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'superadmin@superadmin.com',
             'password' => Hash::make('password')
         ]);
+        $this->call([
+            TagsTableSeeder::class,
+            SongsTableSeeder::class,
+        ]);
     }
 }
