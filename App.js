@@ -58,7 +58,7 @@ export default function App() {
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Reconmended" component={RecomendedScreen} />
         <Stack.Screen name="Wishlist" component={WishlistScreen} />
-        <Stack.Screen name="MovieDetail" component={MovieDetailScreen} />
+        <Stack.Screen name="MovieDetails" component={MovieDetailScreen} options={{ title: 'Movie Details' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

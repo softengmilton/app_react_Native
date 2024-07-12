@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, Text, View, StyleSheet, ImageBackground, Dimensions, ScrollView, FlatList } from 'react-native';
+import { SafeAreaView, Text, View, StyleSheet, ImageBackground, Dimensions, ScrollView, FlatList, Image, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import Header from '../components/Header';
 import SystemBar from '../components/SystemBar';
@@ -9,37 +9,85 @@ import CarouselComponent from '../components/CarouselComponent';
 const { width: screenWidth } = Dimensions.get('window');
 
 export default function Home({ navigation }) {
-  const [responseData, setResponseData] = useState([]);
+  const [trendingMovies, setTrendingMovies] = useState([]);
   const [popularMovies, setPopularMovies] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [pressCounts, setPressCounts] = useState({}); // State to track press counts
 
   useEffect(() => {
     // Fetching trending data
-    axios.get('http://10.0.2.2:8000/api/helodata')
-      .then(response => {
-        setResponseData(response.data);
+    const Options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmMTE1ZjI4MDM1YzY2M2Q2YzAzMGIzMzM1N2UxMmIxNiIsIm5iZiI6MTcyMDc3Mzk1My42NTA1MzMsInN1YiI6IjY2OGVjYWIxZmQ0YmU4Zjg0MTM5YzYzOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.U-7gn5WZFEJ59rdpkiIc8p8cTVmFAA2bsF_Qsct7b-M'
+      }
+    };
+
+    fetch('https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1', Options)
+      .then(response => response.json())
+      .then(data => {
+        const formattedData = data.results.map(item => ({
+          thumbnail: `https://image.tmdb.org/t/p/w500${item.poster_path}`,  // Complete URL for the image
+          title: item.title,  // Ensure 'title' matches what you need to display
+          id: item.id
+        }));
+        setTrendingMovies(formattedData);
         setLoading(false);
       })
       .catch(error => {
         console.error('Error fetching trending data:', error);
+        setLoading(false); // Ensure loading state is updated on error
       });
 
-    // Fetching popular movies
-    axios.get('http://10.0.2.2:8000/api/helodata')
-      .then(response => {
-        setPopularMovies(response.data);
+    fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', Options)
+      .then(response => response.json())
+      .then(data => {
+        const formattedData = data.results.map(item => ({
+          thumbnail: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+          title: item.title,
+          id: item.id
+        }));
+        setPopularMovies(formattedData);
       })
       .catch(error => {
-        console.error('Error fetching popular movies:', error);
+        console.error('Error fetching top-rated movies:', error);
       });
   }, []);
 
+  // Function to handle movie item press
+  const handleMoviePress = async (movieId) => {
+    try {
+      // Clone current pressCounts state
+      const newPressCounts = { ...pressCounts };
+      // Initialize count if not present, otherwise increment
+      newPressCounts[movieId] = (newPressCounts[movieId] || 0) + 1;
+      // Update state
+      setPressCounts(newPressCounts);
+
+      const response = await axios.post('http://your-laravel-api-url/movie-press-counts', {
+        [movieId]: newPressCounts[movieId], // Send the updated count
+      });
+      console.log('Press count data sent successfully:', response.data);
+    } catch (error) {
+      console.error('Error sending press count data:', error);
+    }
+  };
+
   // Render item function for FlatList
   const renderMovieItem = ({ item }) => (
-    <View style={styles.movieItem}>
-      <Text style={styles.movieTitle}>{item.title}</Text>
-      {/* Add any other movie details you want to display */}
-    </View>
+    <TouchableOpacity onPress={() => {
+      handleMoviePress(item.id); // Call handleMoviePress on press
+      navigation.navigate('MovieDetails', { movieId: item.id });
+    }}>
+      <View style={styles.movieItem}>
+        <Image source={{ uri: item.thumbnail }} style={styles.movieImage} />
+        <Text style={styles.movieTitle} numberOfLines={2}>{item.title}</Text>
+        <Text style={styles.pressCountText}>
+          Pressed: {pressCounts[item.id] || 0} times
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 
   return (
@@ -57,11 +105,11 @@ export default function Home({ navigation }) {
               {loading ? (
                 <Text>Loading...</Text>
               ) : (
-                <CarouselComponent data={responseData} />
+                <CarouselComponent data={trendingMovies} />
               )}
 
-              {/* Popular Movies Section */}
-              <Text style={styles.heading}>Popular Movies</Text>
+              {/* Top Rated Movies Section */}
+              <Text style={styles.heading}>Top Rated Movies</Text>
               <FlatList
                 data={popularMovies}
                 renderItem={renderMovieItem}
@@ -76,7 +124,7 @@ export default function Home({ navigation }) {
         </ScrollView>
       </View>
       <SystemBar navigation={navigation} />
-    </SafeAreaView >
+    </SafeAreaView>
   );
 }
 
@@ -110,13 +158,37 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     margin: 10,
     padding: 10,
-    backgroundColor: '#ccc',
+    backgroundColor: '#fff',
     borderRadius: 10,
-    height: 150,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    height: 300,
+    width: screenWidth / 2 - 40, // Adjusted width for two columns
+    borderWidth: 1,
+    borderColor: '#ddd', // Light border color
   },
   movieTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 10,
+    color: '#333', // Darker text color
+  },
+  movieImage: {
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  pressCountText: {
+    fontSize: 12,
+    color: '#777', // Gray text color
     textAlign: 'center',
   },
 });

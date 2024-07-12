@@ -1,73 +1,92 @@
-import React from 'react';
-import { SafeAreaView, StyleSheet, View, Text, Dimensions } from 'react-native';
-import Video from 'react-native-video';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, Animated } from 'react-native';
 
-const { width: screenWidth } = Dimensions.get('window');
+export default function MovieDetails({ route }) {
+    const { movieId } = route.params;
+    const [movie, setMovie] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [fadeAnim] = useState(new Animated.Value(0)); // Animation for fade-in effect
 
-const MovieDetailScreen = () => {
-    const videoRef = React.useRef(null);
-    const backgroundVideo = { uri: 'https://www.youtube.com/watch?v=mVXY5Sj9zc8&ab_channel=AhmedFahad' }; // Replace with your video file URL
+    useEffect(() => {
+        const options = {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmMTE1ZjI4MDM1YzY2M2Q2YzAzMGIzMzM1N2UxMmIxNiIsIm5iZiI6MTcyMDc3Mzk1My42NTA1MzMsInN1YiI6IjY2OGVjYWIxZmQ0YmU4Zjg0MTM5YzYzOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.U-7gn5WZFEJ59rdpkiIc8p8cTVmFAA2bsF_Qsct7b-M'
+            }
+        };
 
-    const onBuffer = () => {
-        console.log('Buffering...');
-    };
+        fetch(`https://api.themoviedb.org/3/movie/${movieId}?language=en-US`, options)
+            .then(response => response.json())
+            .then(data => {
+                setMovie(data);
+                // Trigger fade-in animation
+                Animated.timing(fadeAnim, {
+                    toValue: 1,
+                    duration: 1000, // 1 second
+                    useNativeDriver: true,
+                }).start();
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error('Error fetching movie details:', error);
+                setLoading(false);
+            });
+    }, [fadeAnim, movieId]);
 
-    const onError = (error) => {
-        console.error('Error loading video:', error);
-    };
+    if (loading) {
+        return <Text>Loading...</Text>;
+    }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.videoContainer}>
-                <Video
-                    source={backgroundVideo}
-                    ref={videoRef}
-                    onBuffer={onBuffer}
-                    onError={onError}
-                    style={styles.backgroundVideo}
-                    resizeMode="cover"
-                    paused={false} // Start playing the video immediately
-                    repeat={true} // Repeat the video when it ends
-                />
-            </View>
-            <View style={styles.detailsContainer}>
-                {/* Movie Details */}
-                <Text style={styles.movieTitle}>Movie Title</Text>
-                <Text style={styles.movieDescription}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed aliquam
-                    nec justo non finibus.
-                </Text>
-            </View>
-        </SafeAreaView>
+        <ScrollView style={styles.container}>
+            {movie && (
+                <Animated.View style={{ opacity: fadeAnim }}>
+                    <Image
+                        source={{ uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}` }}
+                        style={styles.poster}
+                    />
+                    <Text style={styles.title}>{movie.title}</Text>
+                    <Text style={styles.overview}>{movie.overview}</Text>
+                    <Text style={styles.releaseDate}>Release Date: {movie.release_date}</Text>
+                    <Text style={styles.rating}>Rating: {movie.vote_average}</Text>
+                </Animated.View>
+            )}
+        </ScrollView>
     );
-};
+}
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        padding: 10,
         backgroundColor: '#fff',
     },
-    videoContainer: {
-        height: screenWidth * (9 / 16), // Assuming 16:9 aspect ratio
+    poster: {
+        width: '100%',
+        height: 400,
+        borderRadius: 10,
     },
-    backgroundVideo: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        bottom: 0,
-        right: 0,
-    },
-    detailsContainer: {
-        padding: 20,
-    },
-    movieTitle: {
+    title: {
         fontSize: 24,
         fontWeight: 'bold',
-    },
-    movieDescription: {
-        fontSize: 16,
         marginTop: 10,
+        textAlign: 'center',
+        textShadowColor: '#000',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 2,
+    },
+    overview: {
+        fontSize: 16,
+        marginVertical: 10,
+        textAlign: 'justify',
+    },
+    releaseDate: {
+        fontSize: 16,
+        marginVertical: 5,
+    },
+    rating: {
+        fontSize: 16,
+        marginVertical: 5,
     },
 });
-
-export default MovieDetailScreen;
