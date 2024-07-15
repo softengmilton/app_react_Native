@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, Text, View, StyleSheet, ImageBackground, Dimensions, ScrollView, FlatList, Image, TouchableOpacity, TextInput, Button } from 'react-native';
+import { SafeAreaView, Text, View, StyleSheet, ImageBackground, Dimensions, ScrollView, FlatList, Image, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import Header from '../components/Header';
 import SystemBar from '../components/SystemBar';
@@ -13,10 +13,8 @@ export default function Home({ navigation }) {
   const [trendingMovies, setTrendingMovies] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
   const [popularMovies, setPopularMovies] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pressCounts, setPressCounts] = useState({});
-  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const options = {
@@ -108,20 +106,6 @@ export default function Home({ navigation }) {
     }
   };
 
-  const handleSearch = async () => {
-    try {
-      const response = await axios.get(`https://api.themoviedb.org/3/search/movie?query=${searchQuery}&api_key=f115f28035c663d6c030b33357e12b16`);
-      const formattedData = response.data.results.map(item => ({
-        thumbnail: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
-        title: item.title,
-        id: item.id
-      }));
-      setSearchResults(formattedData);
-    } catch (error) {
-      console.error('Error fetching search results:', error);
-    }
-  };
-
   const renderMovieItem = (movieType) => ({ item }) => (
     <TouchableOpacity onPress={() => {
       handleMoviePress(item.id, movieType);
@@ -148,27 +132,6 @@ export default function Home({ navigation }) {
           >
             <Header navigation={navigation} />
             <View style={styles.content}>
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Search for a movie..."
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-              />
-              <Button title="Search" onPress={handleSearch} />
-              {searchResults.length > 0 && (
-                <>
-                  <Text style={styles.heading}>Search Results</Text>
-                  <FlatList
-                    data={searchResults}
-                    renderItem={renderMovieItem('search')}
-                    keyExtractor={item => item.id.toString()}
-                    numColumns={2}
-                    scrollEnabled={false}
-                    horizontal={false}
-                    showsVerticalScrollIndicator={false}
-                  />
-                </>
-              )}
               <Text style={styles.heading}>Trending</Text>
               {loading ? (
                 <Text>Loading...</Text>
@@ -220,15 +183,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 20,
     paddingHorizontal: 20,
-  },
-  searchInput: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    backgroundColor: '#fff',
-    marginBottom: 10,
   },
   heading: {
     fontSize: 24,
