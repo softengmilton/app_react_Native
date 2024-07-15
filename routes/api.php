@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\RegisteredUserController;
+use App\Http\Controllers\Api\MoviePressCountController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
@@ -55,3 +56,8 @@ Route::get('/helodata', function () {
     return response()->json($data); // Return the data as a JSON response
 });
 
+
+
+// routes/api.php
+// routes/api.php
+Route::middleware('auth:sanctum')->post('/count', [MoviePressCountController::class, 'store']);
