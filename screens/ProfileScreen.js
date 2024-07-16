@@ -22,7 +22,7 @@ export default function ProfileScreen({ navigation }) {
         // Fetch user data from backend API
         const response = await axios.get("http://10.0.2.2:8000/api/user", config);
         console.log("Response data:", response.data);
-        setUserData(response.data); // Assuming session_id is returned by the API
+        setUserData(response.data.user); // Assuming session_id is returned by the API
       } catch (error) {
         console.log("Error fetching user data:", error.message);
         if (error.response) {

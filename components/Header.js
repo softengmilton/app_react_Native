@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, SafeAreaView, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons'; // Assuming you're using Ionicons for icons
 
 export default function Header({ navigation }) {
@@ -7,21 +7,27 @@ export default function Header({ navigation }) {
     navigation.navigate('Profile');
   };
 
+  const handleSearch = () => {
+    navigation.navigate('Search');
+  };
+
   return (
     <SafeAreaView style={{ marginTop: 20 }}>
       <View style={styles.container}>
         {/* App Name */}
         <View style={styles.logoBackground}>
-          <Text style={styles.logoText}>
-            MC
-          </Text>
+          <Text style={styles.logoText}>MC</Text>
         </View>
 
         {/* Search Bar */}
-        <TextInput
-          style={styles.searchBar}
-          placeholder="Search for artists, songs, or albums"
-        />
+        <TouchableOpacity style={styles.searchBarContainer} onPress={handleSearch}>
+          <TextInput
+            style={styles.searchBar}
+            placeholder="Search for artists, songs, or albums"
+            editable={false} // Make the TextInput non-editable to handle touch
+            pointerEvents="none" // Ensure it doesn't get focus
+          />
+        </TouchableOpacity>
 
         {/* User Profile */}
         <TouchableOpacity style={styles.profileIcon} onPress={handleProfile}>
@@ -32,7 +38,7 @@ export default function Header({ navigation }) {
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -40,9 +46,11 @@ const styles = {
     paddingHorizontal: 16,
     paddingVertical: 12,
   },
-  searchBar: {
+  searchBarContainer: {
     flex: 1,
     marginLeft: 16,
+  },
+  searchBar: {
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 20,
@@ -65,4 +73,4 @@ const styles = {
     fontWeight: 'bold',
     letterSpacing: 2,
   },
-};
+});

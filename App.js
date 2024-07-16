@@ -15,6 +15,7 @@ import Header from "./components/Header";
 import Authtoken from "./utils/Authtoken";
 import WishlistScreen from "./screens/WishlistScreen";
 import MovieDetailScreen from "./screens/MovieDetailScreen";
+import SearchScreen from "./screens/SearchScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -59,6 +60,7 @@ export default function App() {
         <Stack.Screen name="Reconmended" component={RecomendedScreen} />
         <Stack.Screen name="Wishlist" component={WishlistScreen} />
         <Stack.Screen name="MovieDetails" component={MovieDetailScreen} options={{ title: 'Movie Details' }} />
+        <Stack.Screen name="Search" component={SearchScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

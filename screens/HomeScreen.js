@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, Text, View, StyleSheet, ImageBackground, Dimensions, ScrollView, FlatList, Image, TouchableOpacity } from 'react-native';
+import { SafeAreaView, Text, View, StyleSheet, ImageBackground, Dimensions, ScrollView, FlatList, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import Header from '../components/Header';
 import SystemBar from '../components/SystemBar';
@@ -17,67 +17,69 @@ export default function Home({ navigation }) {
   const [pressCounts, setPressCounts] = useState({});
 
   useEffect(() => {
-    const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmMTE1ZjI4MDM1YzY2M2Q2YzAzMGIzMzM1N2UxMmIxNiIsIm5iZiI6MTcyMTA1ODQyNS4wNjIyODIsInN1YiI6IjY2OGVjYWIxZmQ0YmU4Zjg0MTM5YzYzOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.M5phkxuZizanUyC5wLmcJ85p68IWP-AcEqSHd9uhDEk'
+    const fetchData = async () => {
+      try {
+        const options = {
+          method: 'GET',
+          headers: {
+            accept: 'application/json',
+            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmMTE1ZjI4MDM1YzY2M2Q2YzAzMGIzMzM1N2UxMmIxNiIsIm5iZiI6MTcyMTA1ODQyNS4wNjIyODIsInN1YiI6IjY2OGVjYWIxZmQ0YmU4Zjg0MTM5YzYzOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.M5phkxuZizanUyC5wLmcJ85p68IWP-AcEqSHd9uhDEk'
+          }
+        };
+
+        const responses = await Promise.all([
+          fetch('https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1', options),
+          fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options),
+          fetch('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1', options)
+        ]);
+
+        const [nowPlayingResponse, topRatedResponse, popularResponse] = responses;
+
+        if (!nowPlayingResponse.ok || !topRatedResponse.ok || !popularResponse.ok) {
+          throw new Error('Failed to fetch data');
+        }
+
+        const nowPlayingData = await nowPlayingResponse.json();
+        const formattedNowPlaying = nowPlayingData.results.map(item => ({
+          thumbnail: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+          title: item.title,
+          id: item.id
+        }));
+
+        const topRatedData = await topRatedResponse.json();
+        const formattedTopRated = topRatedData.results.map(item => ({
+          thumbnail: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+          title: item.title,
+          id: item.id
+        })).slice(0, 6);
+
+        const popularData = await popularResponse.json();
+        const formattedPopular = popularData.results.map(item => ({
+          thumbnail: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+          title: item.title,
+          id: item.id
+        })).slice(0, 6);
+
+        setTrendingMovies(formattedNowPlaying);
+        setTopRatedMovies(formattedTopRated);
+        setPopularMovies(formattedPopular);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setLoading(false);
       }
     };
 
-    fetch('https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1', options)
-      .then(response => response.json())
-      .then(data => {
-        const formattedData = data.results.map(item => ({
-          thumbnail: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
-          title: item.title,
-          id: item.id
-        }));
-        setTrendingMovies(formattedData);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching trending data:', error);
-        setLoading(false);
-      });
-
-    fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
-      .then(response => response.json())
-      .then(data => {
-        const formattedData = data.results.map(item => ({
-          thumbnail: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
-          title: item.title,
-          id: item.id
-        }));
-        setTopRatedMovies(formattedData.slice(0, 6)); // Limit to 6 top-rated movies
-      })
-      .catch(error => {
-        console.error('Error fetching top-rated movies:', error);
-      });
-
-    fetch('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1', options)
-      .then(response => response.json())
-      .then(data => {
-        const formattedData = data.results.map(item => ({
-          thumbnail: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
-          title: item.title,
-          id: item.id
-        }));
-        setPopularMovies(formattedData.slice(0, 6));
-      })
-      .catch(error => {
-        console.error('Error fetching popular movies:', error);
-      });
+    fetchData();
   }, []);
 
   const handleMoviePress = async (movieId, movieType) => {
     try {
-      const token = await getToken(); // Fetch token from AsyncStorage or state
+      const token = await getToken();
       const newPressCounts = { ...pressCounts };
       newPressCounts[movieId] = (newPressCounts[movieId] || 0) + 1;
       setPressCounts(newPressCounts);
 
-      // Log the data being sent
       console.log('Sending press count data:', {
         movie_id: movieId,
         press_count: newPressCounts[movieId],
@@ -94,12 +96,10 @@ export default function Home({ navigation }) {
         }
       });
 
-      // Log the response data
       console.log('Press count data sent successfully:', response.data);
     } catch (error) {
       if (error.response && error.response.status === 422) {
-        console.error('Validation error:', error.response.data); // Log validation error messages
-        // Handle validation errors in your UI (e.g., show error message to user)
+        console.error('Validation error:', error.response.data);
       } else {
         console.error('Error sending press count data:', error);
       }
@@ -134,7 +134,7 @@ export default function Home({ navigation }) {
             <View style={styles.content}>
               <Text style={styles.heading}>Trending</Text>
               {loading ? (
-                <Text>Loading...</Text>
+                <ActivityIndicator size="large" color="#ffffff" />
               ) : (
                 <CarouselComponent data={trendingMovies} />
               )}

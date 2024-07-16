@@ -12,7 +12,7 @@ export default function SystemBar({ navigation }) {
 
   }
   const handleProfile = () => {
-    navigation.navigate('MovieDetail');
+    navigation.navigate('Profile');
   };
   const wishlist = () => {
     navigation.navigate('Wishlist');
