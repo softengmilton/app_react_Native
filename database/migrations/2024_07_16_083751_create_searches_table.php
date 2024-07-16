@@ -11,15 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clicks', function (Blueprint $table) {
+        Schema::create('searches', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('movie_id');
             $table->unsignedBigInteger('user_id');
-            $table->string('movie_type');
-            $table->integer('press_count');
+            $table->string('query');
             $table->timestamps();
-
-
+            // Adding foreign key constraint
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
@@ -29,10 +26,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('clicks', function (Blueprint $table) {
+        Schema::table('searches', function (Blueprint $table) {
             // Dropping the foreign key constraint first
             $table->dropForeign(['user_id']);
         });
-        Schema::dropIfExists('clicks');
+        Schema::dropIfExists('searches');
     }
 };
