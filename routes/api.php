@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Auth\RegisteredUserController;
 use App\Http\Controllers\Api\MoviePressCountController;
+use App\Http\Controllers\Api\RecomendationController;
 use App\Http\Controllers\Api\SearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +57,8 @@ Route::get('/helodata', function () {
 
     return response()->json($data); // Return the data as a JSON response
 });
+
+Route::get('/recomendation', [RecomendationController::class, 'recomendation']);
 
 
 
