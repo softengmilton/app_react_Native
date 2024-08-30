@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, Text, View, StyleSheet, ImageBackground, Dimensions, FlatList } from 'react-native';
+import { SafeAreaView, Text, View, StyleSheet, ImageBackground, Dimensions, FlatList, Image } from 'react-native';
 import axios from 'axios';
 import Header from '../components/Header';
 import SystemBar from '../components/SystemBar';
@@ -8,39 +8,61 @@ import welcomeImage from './../assets/homescreen2.png';
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 export default function RecomendedScreen({ navigation }) {
-  const [recommendedMovies, setRecommendedMovies] = useState([]);
+  const [RecommendedMovies, setRecommendedMovies] = useState();
+  const [recommendedMovieslist, setRecommendedMovieslist] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Fetching recommended movies
-    axios.get('http://10.0.2.2:8000/api/helodata')
-      .then(response => {
-        setRecommendedMovies(response.data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching recommended movies:', error);
-      });
-  }, []);
+  const API_KEY = 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmMTE1ZjI4MDM1YzY2M2Q2YzAzMGIzMzM1N2UxMmIxNiIsIm5iZiI6MTcyMDc3Mzk1My42NTA1MzMsInN1YiI6IjY2OGVjYWIxZmQ0YmU4Zjg0MTM5YzYzOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.U-7gn5WZFEJ59rdpkiIc8p8cTVmFAA2bsF_Qsct7b-M';
 
-  // Render item function for FlatList
+  const fetchMovie = async () => {
+    try {
+      const response = await axios.get('http://10.0.2.2:8000/api/recomendation');
+      console.log(response.data); // Log response to check structure
+      setRecommendedMovies(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching recommended movies:', error);
+    }
+  };
+
+  const movielist = async () => {
+    try {
+      const response = await fetch(`https://api.themoviedb.org/3/movie/${RecommendedMovies}?language=en-US&page=1`, {
+        headers: {
+          'Authorization': `Bearer ${API_KEY}`,
+          'Content-Type': 'application/json',
+        }
+      });
+      const data = await response.json();
+      setRecommendedMovieslist(data.results);
+      console.log();
+      setLoading(false);
+    } catch (error) {
+      console.error('Error fetching movie list:', error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchMovie();
+    movielist();
+  }, [RecommendedMovies]);
+
   const renderMovieItem = ({ item }) => (
     <View style={styles.movieItem}>
+      <Image
+        source={{ uri: `https://image.tmdb.org/t/p/w500${item.poster_path}` }} // Use poster_path here
+        style={styles.movieImage}
+        resizeMode="cover"
+      />
       <Text style={styles.movieTitle}>{item.title}</Text>
-      {/* Add any other movie details you want to display */}
     </View>
   );
 
-  // Header component for FlatList
-  const ListHeader = () => (
-    <View>
-      <Header navigation={navigation} />
-      <Text style={styles.heading}>Recommended Movies</Text>
-    </View>
-  );
+  const keyExtractor = (item) => item.id.toString();
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <Header navigation={navigation} />
       <View style={styles.container}>
         <ImageBackground
           source={welcomeImage}
@@ -51,14 +73,11 @@ export default function RecomendedScreen({ navigation }) {
             <Text style={styles.loading}>Loading...</Text>
           ) : (
             <FlatList
-              data={recommendedMovies}
+              data={recommendedMovieslist}
               renderItem={renderMovieItem}
-              keyExtractor={item => item.id.toString()}
+              keyExtractor={keyExtractor}
               numColumns={2}
-              ListHeaderComponent={ListHeader}
               contentContainerStyle={styles.flatListContainer}
-              scrollEnabled={false}
-              horizontal={false}
               showsVerticalScrollIndicator={false}
             />
           )}
@@ -79,19 +98,12 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     height: screenHeight,
-    justifyContent: 'space-between', // Ensure content and SystemBar are spaced correctly
+    justifyContent: 'center', // Centering the content vertically
   },
   flatListContainer: {
     flexGrow: 1,
     paddingTop: 20,
-    paddingHorizontal: 20,
-  },
-  heading: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    marginTop: 20,
-    color: '#fff',
+    paddingHorizontal: 10, // Adjusted for better spacing
   },
   movieItem: {
     flex: 1,
@@ -99,14 +111,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     margin: 10,
     padding: 10,
-    backgroundColor: '#ccc',
+    backgroundColor: '#fff', // Changed to white for better contrast
     borderRadius: 10,
-    height: 150,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+    height: 220, // Increased height for better aspect ratio
   },
   movieTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+    marginTop: 5,
   },
   loading: {
     flex: 1,
@@ -114,5 +132,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontSize: 18,
     color: '#fff',
-  }
+    backgroundColor: '#000', // Added background color to improve readability
+  },
+  movieImage: {
+    width: '100%',
+    height: '75%', // Adjusted height to better fit within the item
+    borderRadius: 10,
+    marginBottom: 5,
+  },
 });
