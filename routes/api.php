@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Auth\RegisteredUserController;
 use App\Http\Controllers\Api\MoviePressCountController;
 use App\Http\Controllers\Api\RecomendationController;
 use App\Http\Controllers\Api\SearchController;
+use App\Http\Controllers\Api\WishlistController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
@@ -60,6 +61,15 @@ Route::get('/helodata', function () {
 
 Route::get('/recomendation', [RecomendationController::class, 'recomendation']);
 
+Route::middleware('auth:sanctum')->post('/wishlist/add', [WishlistController::class, 'storeWish']);
+Route::middleware('auth:sanctum')->post('/wishlist/remove', [WishlistController::class, 'destroyWish']);
+Route::middleware('auth:sanctum')->post('/wishlist/check', [WishlistController::class, 'checkWish']);
+
+Route::middleware('auth:sanctum')->post('/wishlist/removewish', [WishlistController::class, 'removeWish']);
+
+
+// Example route in Laravel
+Route::middleware('auth:sanctum')->get('/wishlist', [WishlistController::class, 'index']);
 
 
 // routes/api.php
