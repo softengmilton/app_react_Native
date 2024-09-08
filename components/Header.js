@@ -12,7 +12,7 @@ export default function Header({ navigation }) {
   };
 
   return (
-    <SafeAreaView style={{ marginTop: 20 }}>
+    <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
         {/* App Name */}
         <View style={styles.logoBackground}>
@@ -39,6 +39,16 @@ export default function Header({ navigation }) {
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    position: 'Fixed', // Fixes the position to the top of the app
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000, // Ensures it stays on top of other components
+    // backgroundColor: '#fff', // Set background to avoid overlaying issues
+    paddingTop: 20, // Padding for status bar
+    // marginBottom: 20,
+  },
   container: {
     flexDirection: 'row',
     alignItems: 'center',

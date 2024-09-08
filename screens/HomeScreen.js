@@ -18,6 +18,7 @@ export default function Home({ navigation }) {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
         const options = {
           method: 'GET',
@@ -66,6 +67,8 @@ export default function Home({ navigation }) {
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
+
+      } finally {
         setLoading(false);
       }
     };
@@ -131,34 +134,37 @@ export default function Home({ navigation }) {
             resizeMode="cover"
           >
             <Header navigation={navigation} />
-            <View style={styles.content}>
-              <Text style={styles.heading}>Trending</Text>
-              {loading ? (
-                <ActivityIndicator size="large" color="#ffffff" />
-              ) : (
+            {loading ? (
+              <ActivityIndicator size="large" color="#ffffff" />
+            ) : (
+              <View style={styles.content}>
+                <Text style={styles.heading}>Trending</Text>
+
+
                 <CarouselComponent data={trendingMovies} />
-              )}
-              <Text style={styles.heading}>Popular Movies</Text>
-              <FlatList
-                data={popularMovies}
-                renderItem={renderMovieItem('popular')}
-                keyExtractor={item => item.id.toString()}
-                numColumns={2}
-                scrollEnabled={false}
-                horizontal={false}
-                showsVerticalScrollIndicator={false}
-              />
-              <Text style={styles.heading}>Top Rated Movies</Text>
-              <FlatList
-                data={topRatedMovies}
-                renderItem={renderMovieItem('top_rated')}
-                keyExtractor={item => item.id.toString()}
-                numColumns={2}
-                scrollEnabled={false}
-                horizontal={false}
-                showsVerticalScrollIndicator={false}
-              />
-            </View>
+
+                <Text style={styles.heading}>Popular Movies</Text>
+                <FlatList
+                  data={popularMovies}
+                  renderItem={renderMovieItem('popular')}
+                  keyExtractor={item => item.id.toString()}
+                  numColumns={2}
+                  scrollEnabled={false}
+                  horizontal={false}
+                  showsVerticalScrollIndicator={false}
+                />
+                <Text style={styles.heading}>Top Rated Movies</Text>
+                <FlatList
+                  data={topRatedMovies}
+                  renderItem={renderMovieItem('top_rated')}
+                  keyExtractor={item => item.id.toString()}
+                  numColumns={2}
+                  scrollEnabled={false}
+                  horizontal={false}
+                  showsVerticalScrollIndicator={false}
+                />
+              </View>
+            )}
           </ImageBackground>
         </ScrollView>
       </View>
@@ -171,6 +177,12 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
   },
+  loadingContainer: { // New style for the loading screen
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#000', // Optional: Set a background color
+  },
   container: {
     flex: 1,
   },
@@ -178,6 +190,7 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
     justifyContent: 'center',
+    height: '100%'
   },
   content: {
     flex: 1,

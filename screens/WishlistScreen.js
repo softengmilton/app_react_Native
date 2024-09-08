@@ -4,6 +4,8 @@ import axios from 'axios';
 import Header from '../components/Header';
 import SystemBar from '../components/SystemBar';
 import wishlistImage from './../assets/homescreen2.png';
+import { getToken } from "../utils/Authtoken";
+import { Ionicons } from '@expo/vector-icons';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -13,25 +15,59 @@ export default function WishlistScreen({ navigation }) {
 
     useEffect(() => {
         // Fetching wishlist movies
-        axios.get('http://10.0.2.2:8000/api/helodata')
-            .then(response => {
+        const fetchWishlist = async () => {
+            try {
+                const token = await getToken();
+                const response = await axios.get('http://10.0.2.2:8000/api/wishlist', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
                 setWishlistMovies(response.data);
-                setLoading(false);
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error('Error fetching wishlist movies:', error);
-            });
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchWishlist();
     }, []);
+
+    // Remove item from wishlist
+    const removeFromWishlist = async (id) => {
+        try {
+            const token = await getToken();
+            // console.log(id);
+            await axios.post('http://10.0.2.2:8000/api/wishlist/removewish', { id }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            // Update state to remove item
+            setWishlistMovies(wishlistMovies.filter(movie => movie.id !== id));
+        } catch (error) {
+            console.error('Error removing item from wishlist:', error);
+        }
+    };
 
     // Render item function for FlatList
     const renderMovieItem = ({ item }) => (
-        <View style={styles.movieItem}>
-            <Image source={{ uri: item.image }} style={styles.movieImage} />
-            <Text style={styles.movieTitle}>{item.name}</Text>
-            <TouchableOpacity style={styles.playButton}>
-                <Text style={styles.playButtonText}>Play</Text>
+        <TouchableOpacity style={styles.movieItem}
+            onPress={() => {// Handle any additional logic
+                navigation.navigate('MovieDetails', { movieId: item.movie_id }); // Navigate to details
+            }}
+        >
+            <Image source={{ uri: `https://image.tmdb.org/t/p/w500${item.poster}` }} style={styles.movieImage} />
+            <View style={styles.movieDetails}>
+                <Text style={styles.movieTitle}>{item.movie_name}</Text>
+            </View>
+            <TouchableOpacity style={styles.removeButton} onPress={() => removeFromWishlist(item.id)}>
+                <Ionicons name="trash-outline" size={20} color="#ffffff" />
             </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
     );
 
     // Header component for FlatList
@@ -60,8 +96,7 @@ export default function WishlistScreen({ navigation }) {
                             numColumns={1}
                             ListHeaderComponent={ListHeader}
                             contentContainerStyle={styles.flatListContainer}
-                            scrollEnabled={false}
-                            horizontal={false}
+                            scrollEnabled={true}
                             showsVerticalScrollIndicator={false}
                         />
                     )}
@@ -82,7 +117,7 @@ const styles = StyleSheet.create({
     background: {
         flex: 1,
         height: screenHeight,
-        justifyContent: 'space-between', // Ensure content and SystemBar are spaced correctly
+        justifyContent: 'space-between',
     },
     flatListContainer: {
         flexGrow: 1,
@@ -119,12 +154,13 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#666666',
     },
+    movieDetails: {
+        flex: 1,
+        marginLeft: 10,
+    },
     movieTitle: {
         fontSize: 18,
         fontWeight: 'bold',
-        textAlign: 'left',
-        flex: 1,
-        marginLeft: 10,
         color: '#ffffff',
     },
     playButton: {
@@ -136,6 +172,19 @@ const styles = StyleSheet.create({
         borderColor: '#0056b3',
     },
     playButtonText: {
+        color: '#ffffff',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    removeButton: {
+        backgroundColor: '#FF4D4D',
+        paddingVertical: 8,
+        paddingHorizontal: 15,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#cc0000',
+    },
+    removeButtonText: {
         color: '#ffffff',
         fontSize: 16,
         fontWeight: 'bold',

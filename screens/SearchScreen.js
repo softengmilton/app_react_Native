@@ -25,11 +25,11 @@ const SearchScreen = ({ navigation }) => {
             setSearchResults(data.results);
 
             // Send search data to the Laravel backend
-            await axios.post(
-                'http://your-laravel-backend-url/api/searches',
-                { query: searchQuery }, // Replace userId with the actual user ID from AsyncStorage
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            // await axios.post(
+            //     'http://10.0.2.2:8000/api/searches',
+            //     { query: searchQuery }, // Replace userId with the actual user ID from AsyncStorage
+            //     { headers: { Authorization: `Bearer ${token}` } }
+            // );
         } catch (error) {
             console.error('Error fetching search results:', error);
         }
