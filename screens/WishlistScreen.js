@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, Text, View, StyleSheet, ImageBackground, Dimensions, FlatList, Image, TouchableOpacity } from 'react-native';
+import { SafeAreaView, Text, View, StyleSheet, ImageBackground, Dimensions, FlatList, Image, TouchableOpacity,ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import Header from '../components/Header';
 import SystemBar from '../components/SystemBar';
 import wishlistImage from './../assets/homescreen2.png';
 import { getToken } from "../utils/Authtoken";
 import { Ionicons } from '@expo/vector-icons';
+
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
@@ -87,7 +88,9 @@ export default function WishlistScreen({ navigation }) {
                     resizeMode="cover"
                 >
                     {loading ? (
-                        <Text style={styles.loading}>Loading...</Text>
+                        <View style={styles.loadingContainer}>
+                            <ActivityIndicator size="large" color="#ffffff" />
+                      </View>
                     ) : (
                         <FlatList
                             data={wishlistMovies}
@@ -147,6 +150,11 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         elevation: 5,
     },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
     movieImage: {
         width: 80,
         height: 80,

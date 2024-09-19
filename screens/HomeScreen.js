@@ -30,7 +30,7 @@ export default function Home({ navigation }) {
 
         const responses = await Promise.all([
           fetch('https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1', options),
-          fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options),
+          fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=3', options),
           fetch('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1', options)
         ]);
 
@@ -52,14 +52,14 @@ export default function Home({ navigation }) {
           thumbnail: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
           title: item.title,
           id: item.id
-        })).slice(0, 6);
+        })).slice(0, 50);
 
         const popularData = await popularResponse.json();
         const formattedPopular = popularData.results.map(item => ({
           thumbnail: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
           title: item.title,
           id: item.id
-        })).slice(0, 6);
+        })).slice(0, 50);
 
         setTrendingMovies(formattedNowPlaying);
         setTopRatedMovies(formattedTopRated);
@@ -135,7 +135,9 @@ export default function Home({ navigation }) {
           >
             <Header navigation={navigation} />
             {loading ? (
-              <ActivityIndicator size="large" color="#ffffff" />
+              <View  style={styles.loadingContainer}>
+                  <ActivityIndicator size="large" color="#ffffff" />
+              </View>
             ) : (
               <View style={styles.content}>
                 <Text style={styles.heading}>Trending</Text>
@@ -242,5 +244,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#777',
     textAlign: 'center',
+  },
+    loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
